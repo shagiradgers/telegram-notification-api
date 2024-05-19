@@ -1,0 +1,4 @@
+server_host: "localhost"
+server_port: 8082
+database_connection_string: "."
+telegram_bot_token: "."

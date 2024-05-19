@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package notification.v1;
+option go_package = "github.com/shagiradgers/telegram-notification-api/pkg/notification;notification";
+
+service telegram_notification_service {
+  rpc SendNotification(SendNotificationRequest) returns (SendNotificationResponse) {}
+  rpc GetNotification(GetNotificationRequest) returns (GetNotificationResponse) {}
+  rpc GetNotifications(GetNotificationsRequest) returns (GetNotificationsResponse) {}
+
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  rpc GetUsersById(GetUsersByIdRequest) returns (GetUsersByIdResponse) {}
+  rpc GetUsersByFilter(GetUsersByFilterRequest) returns (GetUsersByFilterResponse) {}
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+  rpc EditUser(EditUserRequest) returns (EditUserResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+}
+
+enum NotificationStatus {
+  CREATED = 0;
+  SEND = 1;
+  DELETED = 2;
+  PROBLEM = 3;
+}
+
+message SendNotificationRequest {
+  int64 sender_id = 1;
+  repeated int64 receiver_ids = 2;
+  string message = 3;
+  optional string media_content = 4;
+}
+
+message SendNotificationResponse {
+  int64 notification_id = 1;
+  NotificationStatus message_status = 2;
+}
+
+message Notification {
+  int64 notification_id = 1;
+  int64 sender_id = 2;
+  repeated int64 receiver_ids = 3;
+  string message = 4;
+  optional string media_content = 5;
+  NotificationStatus notification_status = 6;
+  google.protobuf.Timestamp date = 7;
+}
+
+message GetNotificationRequest {
+  int64 notification_id = 1;
+}
+
+message GetNotificationResponse {
+  Notification notification = 1;
+}
+
+message GetNotificationsRequest {
+  repeated int64 notification_ids = 1;
+  int64 limit = 2;
+  int64 offset = 3;
+}
+
+message GetNotificationsResponse {
+  repeated Notification notification = 1;
+  int64 limit = 2;
+  int64 offset = 3;
+  int64 count = 4;
+}
+
+enum UserRole {
+  READER = 0;
+  WRITER = 1;
+}
+
+enum UserNotificationStatus {
+  ON = 0;
+  DISABLE = 1;
+}
+
+enum UserStatus {
+  ACTIVE = 0;
+  DISABLED = 1;
+}
+
+message FIO {
+  string firstname = 1;
+  string surname = 2;
+  optional string patronymic = 3;
+}
+
+message User {
+  int64 user_id = 1;
+  int64 telegram_id = 2;
+  UserRole user_role = 3;
+  UserNotificationStatus user_notification_status = 4;
+  string group = 5;
+  FIO fio = 6;
+  string mobile_phone = 7;
+  UserStatus user_status = 8;
+}
+
+message GetUserRequest {
+  int64 user_id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message GetUsersByIdRequest {
+  repeated int64 user_ids = 1;
+  int64 limit = 2;
+  int64 offset = 3;
+}
+
+message GetUsersByIdResponse {
+  repeated User users = 1;
+  int64 limit = 2;
+  int64 offset = 3;
+  int64 count = 4;
+}
+
+message GetUsersByFilterRequest {
+  optional UserRole user_role = 1;
+  optional UserNotificationStatus user_notification_status = 2;
+  optional string group = 3;
+  optional string firstname = 4;
+  optional string surname = 5;
+  optional string patronymic = 6;
+  optional string mobile_phone = 7;
+  optional UserStatus user_status = 8;
+  int64 limit = 9;
+  int64 offset = 10;
+
+}
+
+message GetUsersByFilterResponse {
+  repeated User users = 1;
+  int64 limit = 2;
+  int64 offset = 3;
+  int64 count = 4;
+}
+
+message DeleteUserRequest {
+  int64 user_id = 1;
+}
+
+message DeleteUserResponse {
+
+}
+
+message EditUserRequest {
+  int64 user_id = 1;
+  optional int64 telegram_id = 2;
+  optional UserRole user_role = 3;
+  optional UserNotificationStatus user_notification_status = 4;
+  optional string group = 5;
+  optional string firstname = 6;
+  optional string surname = 7;
+  optional string patronymic = 8;
+  optional string mobile_phone = 9;
+  optional UserStatus user_status = 10;
+}
+
+message EditUserResponse {
+  User user = 1;
+}
+
+message CreateUserRequest {
+  int64 telegram_id = 1;
+  UserRole user_role = 2;
+  UserNotificationStatus user_notification_status = 3;
+  string group = 4;
+  FIO fio = 5;
+  string mobile_phone = 6;
+}
+
+message CreateUserResponse {
+
+}
