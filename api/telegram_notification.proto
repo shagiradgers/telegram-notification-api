@@ -11,6 +11,7 @@ service telegram_notification_service {
   rpc GetNotifications(GetNotificationsRequest) returns (GetNotificationsResponse) {}
 
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  rpc GetUserByTelegramID (GetUserByTelegramIDRequest) returns (GetUserByTelegramIDResponse) {}
   rpc GetUsersById(GetUsersByIdRequest) returns (GetUsersByIdResponse) {}
   rpc GetUsersByFilter(GetUsersByFilterRequest) returns (GetUsersByFilterResponse) {}
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
@@ -178,4 +179,12 @@ message CreateUserRequest {
 
 message CreateUserResponse {
 
+}
+
+message GetUserByTelegramIDRequest {
+  int64 telegram_id = 1;
+}
+
+message GetUserByTelegramIDResponse {
+  User user = 1;
 }

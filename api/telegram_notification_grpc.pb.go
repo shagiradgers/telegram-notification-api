@@ -26,6 +26,7 @@ type TelegramNotificationServiceClient interface {
 	GetNotification(ctx context.Context, in *GetNotificationRequest, opts ...grpc.CallOption) (*GetNotificationResponse, error)
 	GetNotifications(ctx context.Context, in *GetNotificationsRequest, opts ...grpc.CallOption) (*GetNotificationsResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	GetUserByTelegramID(ctx context.Context, in *GetUserByTelegramIDRequest, opts ...grpc.CallOption) (*GetUserByTelegramIDResponse, error)
 	GetUsersById(ctx context.Context, in *GetUsersByIdRequest, opts ...grpc.CallOption) (*GetUsersByIdResponse, error)
 	GetUsersByFilter(ctx context.Context, in *GetUsersByFilterRequest, opts ...grpc.CallOption) (*GetUsersByFilterResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
@@ -71,6 +72,15 @@ func (c *telegramNotificationServiceClient) GetNotifications(ctx context.Context
 func (c *telegramNotificationServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	out := new(GetUserResponse)
 	err := c.cc.Invoke(ctx, "/notification.v1.telegram_notification_service/GetUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *telegramNotificationServiceClient) GetUserByTelegramID(ctx context.Context, in *GetUserByTelegramIDRequest, opts ...grpc.CallOption) (*GetUserByTelegramIDResponse, error) {
+	out := new(GetUserByTelegramIDResponse)
+	err := c.cc.Invoke(ctx, "/notification.v1.telegram_notification_service/GetUserByTelegramID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -130,6 +140,7 @@ type TelegramNotificationServiceServer interface {
 	GetNotification(context.Context, *GetNotificationRequest) (*GetNotificationResponse, error)
 	GetNotifications(context.Context, *GetNotificationsRequest) (*GetNotificationsResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	GetUserByTelegramID(context.Context, *GetUserByTelegramIDRequest) (*GetUserByTelegramIDResponse, error)
 	GetUsersById(context.Context, *GetUsersByIdRequest) (*GetUsersByIdResponse, error)
 	GetUsersByFilter(context.Context, *GetUsersByFilterRequest) (*GetUsersByFilterResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
@@ -153,6 +164,9 @@ func (UnimplementedTelegramNotificationServiceServer) GetNotifications(context.C
 }
 func (UnimplementedTelegramNotificationServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedTelegramNotificationServiceServer) GetUserByTelegramID(context.Context, *GetUserByTelegramIDRequest) (*GetUserByTelegramIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByTelegramID not implemented")
 }
 func (UnimplementedTelegramNotificationServiceServer) GetUsersById(context.Context, *GetUsersByIdRequest) (*GetUsersByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsersById not implemented")
@@ -251,6 +265,24 @@ func _TelegramNotificationService_GetUser_Handler(srv interface{}, ctx context.C
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TelegramNotificationServiceServer).GetUser(ctx, req.(*GetUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TelegramNotificationService_GetUserByTelegramID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByTelegramIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TelegramNotificationServiceServer).GetUserByTelegramID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/notification.v1.telegram_notification_service/GetUserByTelegramID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TelegramNotificationServiceServer).GetUserByTelegramID(ctx, req.(*GetUserByTelegramIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -367,6 +399,10 @@ var TelegramNotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUser",
 			Handler:    _TelegramNotificationService_GetUser_Handler,
+		},
+		{
+			MethodName: "GetUserByTelegramID",
+			Handler:    _TelegramNotificationService_GetUserByTelegramID_Handler,
 		},
 		{
 			MethodName: "GetUsersById",

@@ -14,7 +14,7 @@ func (s *server) GetUsersById(
 	ctx context.Context,
 	req *desc.GetUsersByIdRequest,
 ) (*desc.GetUsersByIdResponse, error) {
-	h, err := newGetUsersById(ctx, s.dao, req)
+	h, err := newGetUsersByIdHandler(ctx, s.dao, req)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ type getUserByIdHandler struct {
 	users []dao.UserTable
 }
 
-func newGetUsersById(
+func newGetUsersByIdHandler(
 	ctx context.Context,
 	dao dao.DAO,
 	req *desc.GetUsersByIdRequest,

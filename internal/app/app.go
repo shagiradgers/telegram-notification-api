@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net"
-	"telegram-notification-api/internal/clients"
-	"telegram-notification-api/internal/dao"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
@@ -14,6 +12,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	desc "telegram-notification-api/api"
+	"telegram-notification-api/internal/clients"
+	"telegram-notification-api/internal/dao"
 	"telegram-notification-api/internal/server"
 )
 

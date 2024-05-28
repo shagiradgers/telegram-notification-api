@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
 	"telegram-notification-api/internal/app"
 	"telegram-notification-api/internal/clients"
 	projectConfig "telegram-notification-api/internal/config"
