@@ -17,6 +17,8 @@ service telegram_notification_service {
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
   rpc EditUser(EditUserRequest) returns (EditUserResponse) {}
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+
+  rpc GetGroups(GetGroupsRequest) returns (GetGroupsResponse) {}
 }
 
 enum NotificationStatus {
@@ -187,4 +189,12 @@ message GetUserByTelegramIDRequest {
 
 message GetUserByTelegramIDResponse {
   User user = 1;
+}
+
+message GetGroupsRequest {
+}
+
+message GetGroupsResponse {
+  repeated string groups = 1;
+  int64 count = 2;
 }

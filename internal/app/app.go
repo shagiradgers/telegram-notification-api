@@ -89,8 +89,8 @@ func (a *App) Stop() {
 
 	a.log.With(slog.String("op", op)).
 		Info("stopping gRPC server", slog.Int("port", a.port))
+	a.log.With(slog.String("op", op)).
+		Info("closing db connection", slog.Any("err", a.dao.Close()))
 
 	a.gRPCServer.GracefulStop()
-	a.log.With(slog.String("op", op)).
-		Info("closing db connection", slog.String("err", a.dao.Close().Error()))
 }

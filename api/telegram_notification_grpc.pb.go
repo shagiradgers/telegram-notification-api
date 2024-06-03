@@ -32,6 +32,7 @@ type TelegramNotificationServiceClient interface {
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	EditUser(ctx context.Context, in *EditUserRequest, opts ...grpc.CallOption) (*EditUserResponse, error)
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	GetGroups(ctx context.Context, in *GetGroupsRequest, opts ...grpc.CallOption) (*GetGroupsResponse, error)
 }
 
 type telegramNotificationServiceClient struct {
@@ -132,6 +133,15 @@ func (c *telegramNotificationServiceClient) CreateUser(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *telegramNotificationServiceClient) GetGroups(ctx context.Context, in *GetGroupsRequest, opts ...grpc.CallOption) (*GetGroupsResponse, error) {
+	out := new(GetGroupsResponse)
+	err := c.cc.Invoke(ctx, "/notification.v1.telegram_notification_service/GetGroups", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TelegramNotificationServiceServer is the server API for TelegramNotificationService service.
 // All implementations must embed UnimplementedTelegramNotificationServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type TelegramNotificationServiceServer interface {
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	EditUser(context.Context, *EditUserRequest) (*EditUserResponse, error)
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	GetGroups(context.Context, *GetGroupsRequest) (*GetGroupsResponse, error)
 	mustEmbedUnimplementedTelegramNotificationServiceServer()
 }
 
@@ -182,6 +193,9 @@ func (UnimplementedTelegramNotificationServiceServer) EditUser(context.Context, 
 }
 func (UnimplementedTelegramNotificationServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedTelegramNotificationServiceServer) GetGroups(context.Context, *GetGroupsRequest) (*GetGroupsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroups not implemented")
 }
 func (UnimplementedTelegramNotificationServiceServer) mustEmbedUnimplementedTelegramNotificationServiceServer() {
 }
@@ -377,6 +391,24 @@ func _TelegramNotificationService_CreateUser_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TelegramNotificationService_GetGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TelegramNotificationServiceServer).GetGroups(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/notification.v1.telegram_notification_service/GetGroups",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TelegramNotificationServiceServer).GetGroups(ctx, req.(*GetGroupsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TelegramNotificationService_ServiceDesc is the grpc.ServiceDesc for TelegramNotificationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -423,6 +455,10 @@ var TelegramNotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateUser",
 			Handler:    _TelegramNotificationService_CreateUser_Handler,
+		},
+		{
+			MethodName: "GetGroups",
+			Handler:    _TelegramNotificationService_GetGroups_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
