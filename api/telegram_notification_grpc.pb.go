@@ -4,7 +4,7 @@
 // - protoc             v4.25.2
 // source: api/telegram_notification.proto
 
-package notification
+package telegram
 
 import (
 	context "context"
