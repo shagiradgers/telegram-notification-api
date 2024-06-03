@@ -3,7 +3,7 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 
 package notification.v1;
-option go_package = "github.com/shagiradgers/telegram-notification-api/pkg/notification;notification";
+option go_package = "github.com/shagiradgers/telegram-notification-api/pkg/notification;telegram";
 
 service telegram_notification_service {
   rpc SendNotification(SendNotificationRequest) returns (SendNotificationResponse) {}
