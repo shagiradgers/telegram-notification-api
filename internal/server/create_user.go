@@ -21,14 +21,14 @@ func (s *server) CreateUser(ctx context.Context, req *desc.CreateUserRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	return &desc.CreateUserResponse{}, nil
+	return h.response(), nil
 }
 
 func (h *createUserHandler) handle() error {
 	if h == nil {
 		return fmt.Errorf("got nil receiver")
 	}
-	err := h.dao.
+	u, err := h.dao.
 		NewUserQuery().
 		CreateUser(
 			h.ctx,
@@ -45,7 +45,32 @@ func (h *createUserHandler) handle() error {
 	if err != nil {
 		return errors.WrapToNetwork(err).ToGRPCError()
 	}
+	h.createdUser = u
 	return nil
+}
+
+func (h *createUserHandler) response() *desc.CreateUserResponse {
+	var patronymic *string
+	if h.createdUser.Patronymic.Valid {
+		patronymic = &h.createdUser.Patronymic.String
+	}
+
+	return &desc.CreateUserResponse{
+		User: &desc.User{
+			UserId:                 h.createdUser.Id,
+			TelegramId:             h.createdUser.TelegramId,
+			UserRole:               desc.UserRole(desc.UserRole_value[h.createdUser.Role]),
+			UserNotificationStatus: desc.UserNotificationStatus(desc.NotificationStatus_value[h.createdUser.NotificationStatus]),
+			Group:                  h.createdUser.Group,
+			Fio: &desc.FIO{
+				Firstname:  h.createdUser.Firstname,
+				Surname:    h.createdUser.Surname,
+				Patronymic: patronymic,
+			},
+			MobilePhone: h.createdUser.MobilePhone,
+			UserStatus:  desc.UserStatus(desc.UserRole_value[h.createdUser.Status]),
+		},
+	}
 }
 
 type createUserHandler struct {
@@ -59,6 +84,7 @@ type createUserHandler struct {
 	Fio                    createUserHandlerFIO
 	MobilePhone            string
 	UserStatus             string
+	createdUser            dao.UserTable
 }
 
 type createUserHandlerFIO struct {

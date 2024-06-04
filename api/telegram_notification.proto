@@ -180,7 +180,7 @@ message CreateUserRequest {
 }
 
 message CreateUserResponse {
-
+  User user = 1;
 }
 
 message GetUserByTelegramIDRequest {

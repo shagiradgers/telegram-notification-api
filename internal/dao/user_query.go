@@ -22,7 +22,7 @@ type UserQuery interface {
 		patronymic sql.NullString,
 		mobilePhone string,
 		userStatus string,
-	) error
+	) (UserTable, error)
 	DeleteUser(ctx context.Context, userID int64) error
 	ChangeUser(ctx context.Context, user UserTable, fields ...string) (UserTable, error)
 	GetUserByFilter(
@@ -65,7 +65,8 @@ func (u *userQuery) CreateUser(
 	patronymic sql.NullString,
 	mobilePhone string,
 	userStatus string,
-) error {
+) (UserTable, error) {
+	var dest UserTable
 	query := qb().
 		Insert(userTableName).
 		Columns(
@@ -89,9 +90,10 @@ func (u *userQuery) CreateUser(
 			patronymic,
 			mobilePhone,
 			userStatus,
-		)
-	err := u.storage.ExecX(ctx, query)
-	return err
+		).
+		Suffix("RETURNING *")
+	err := u.storage.GetX(ctx, &dest, query)
+	return dest, err
 }
 
 func (u *userQuery) DeleteUser(ctx context.Context, userID int64) error {
