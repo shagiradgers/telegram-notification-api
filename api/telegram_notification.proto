@@ -133,8 +133,9 @@ message GetUsersByFilterRequest {
   optional string patronymic = 6;
   optional string mobile_phone = 7;
   optional UserStatus user_status = 8;
-  int64 limit = 9;
-  int64 offset = 10;
+  optional int64 TelegramId = 9;
+  int64 limit = 10;
+  int64 offset = 11;
 
 }
 

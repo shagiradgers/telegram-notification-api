@@ -8,7 +8,6 @@ import (
 	"telegram-notification-api/internal/dao"
 	"telegram-notification-api/internal/errors"
 	"telegram-notification-api/internal/types/nulltypes"
-	"telegram-notification-api/internal/utils/async"
 	"time"
 
 	desc "telegram-notification-api/api"
@@ -75,26 +74,24 @@ func (h *sendNotificationHandler) sendMessageToTelegram() error {
 	var err error
 	var user dao.UserTable
 
-	dp := async.NewAsyncDispatcher(10)
-
 	for idx := range h.receiverIDs {
 		user, err = h.dao.NewUserQuery().GetUser(h.ctx, h.receiverIDs[idx])
 		if err != nil {
 			return err
 		}
-
-		dp.AddJob(func() error {
-			return h.clients.TelegramClient().SendMessage(
-				h.ctx,
-				user.TelegramId,
-				h.message,
-				h.mediaContent,
-				!desc.UserNotificationStatus(desc.UserNotificationStatus_value[user.NotificationStatus]).
-					ToBool(),
-			)
-		})
+		err = h.clients.TelegramClient().SendMessage(
+			h.ctx,
+			user.TelegramId,
+			h.message,
+			h.mediaContent,
+			!desc.UserNotificationStatus(desc.UserNotificationStatus_value[user.NotificationStatus]).
+				ToBool(),
+		)
+		if err != nil {
+			return err
+		}
 	}
-	return dp.Run()
+	return nil
 }
 
 func (h *sendNotificationHandler) response() *desc.SendNotificationResponse {

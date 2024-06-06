@@ -108,6 +108,10 @@ func (h *getUsersByFilterHandler) validate() error {
 }
 
 func (h *getUsersByFilterHandler) adapt(req *desc.GetUsersByFilterRequest) *getUsersByFilterHandler {
+	if req.TelegramId != nil {
+		h.filterUser.TelegramId = req.GetTelegramId()
+		h.fields = append(h.fields, "telegram_id")
+	}
 	if req.Firstname != nil {
 		h.filterUser.Firstname = req.GetFirstname()
 		h.fields = append(h.fields, "firstname")
@@ -126,7 +130,7 @@ func (h *getUsersByFilterHandler) adapt(req *desc.GetUsersByFilterRequest) *getU
 	}
 	if req.Group != nil {
 		h.filterUser.Group = req.GetGroup()
-		h.fields = append(h.fields, "group")
+		h.fields = append(h.fields, "user_group")
 	}
 	if req.UserNotificationStatus != nil {
 		h.filterUser.NotificationStatus = req.GetUserNotificationStatus().String()
